@@ -11,3 +11,5 @@ with open("input.txt","r") as f:
 print(elves)
 
 print("Max:", max(elves))
+
+print("Max 3: ", sum(sorted(elves, reverse=True)[:3]))
