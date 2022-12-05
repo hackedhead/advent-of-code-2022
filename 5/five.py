@@ -5,9 +5,16 @@ import itertools
 layout = []
 instructions = []
 
+
+class Move:
+    def __init__(self, count, from_col, to_col):
+        self.count = count
+        self.from_col = from_col-1
+        self.to_col = to_col-1
+
 def parse_move(line):
     tokens = line.strip().split(" ")
-    return (tokens[1], tokens[3], tokens[5])
+    return Move(int(tokens[1]), int(tokens[3]), int(tokens[5]))
 
 def reflow_layout(layout):
     # drop two final lines
@@ -26,6 +33,22 @@ def reflow_layout(layout):
     return new_layout
 
 
+def print_layout(layout):
+    for each in layout:
+        for crate in each:
+            print(crate, end=" ")
+        print("")
+
+def process_move(move, layout):
+    for step in range(move.count):
+        crate = layout[move.from_col].pop()
+        layout[move.to_col].append(crate)
+
+
+def process_instructions(instructions, layout):
+    for move in instructions:
+        process_move(move, layout)
+
 
 with open(os.environ["IN"],"r") as file:
     lines = file.readlines()
@@ -37,3 +60,8 @@ with open(os.environ["IN"],"r") as file:
 
 
     layout =  reflow_layout(layout)
+    print_layout(layout)
+
+    process_instructions(instructions, layout)
+    print("-----")
+    print_layout(layout)
