@@ -40,8 +40,11 @@ def print_layout(layout):
         print("")
 
 def process_move(move, layout):
+    stack = []
     for step in range(move.count):
-        crate = layout[move.from_col].pop()
+        stack.append(layout[move.from_col].pop())
+    stack.reverse()
+    for crate in stack:
         layout[move.to_col].append(crate)
 
 
