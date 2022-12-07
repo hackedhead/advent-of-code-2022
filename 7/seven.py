@@ -40,11 +40,19 @@ def print_node(node: Node, max_size=None, depth=0):
     for name, cnode in node.get_children().items():
         print_node(cnode, max_size=max_size, depth=depth+1)
 
+def find_node(node: Node, min_size=None, depth=0):
+    size = node.get_total_size()
+    if min_size is not None and size >= min_size and node.isdir():
+        print(node.name, " : ", size)
+        yield size
+    for name, cnode in node.get_children().items():
+        yield from find_node(cnode, min_size=min_size, depth=depth+1)
 
 
 
 disk = Node(name="/", parent=None)
 cwd = disk
+files = 0
 for line in lines:
     if line.startswith("$ cd .."):
         cwd = cwd.parent
@@ -58,8 +66,10 @@ for line in lines:
     else:
         size = line.strip().split(" ")[0]
         target = line.strip().split(" ")[1]
+        files += 1
         cwd.add_child(Node(name=target, parent=cwd, size=int(size)))
 
-print_node(disk)
-print_node(disk, max_size=100000)
+# print_node(disk)
+# print_node(disk, max_size=100000)
 
+print(list(find_node(disk,min_size=10822529)))
